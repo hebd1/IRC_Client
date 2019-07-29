@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import socket
+import threading
 
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server = "chat.freenode.net" 
@@ -30,19 +31,19 @@ def sendmsg(msg, target=channel):
 
 def main():
     joinchan(channel)
+    b = threading.Thread(name='background', target=background)
+    b.start()
+    while 1:
+         outmsg = input(botnick + ": ") 
+         sendmsg(outmsg)
+
+def background():
     while 1:
         ircmsg = ircsock.recv(2048).decode("UTF-8")
         ircmsg = ircmsg.strip('\n\r') 
         print(ircmsg)
         if ircmsg.find("PING :") != -1:
             ping()
-        else:
-            outmsg = input(botnick + ": ") 
-            sendmsg(outmsg)
-
 
 
 main()
-
-
-
