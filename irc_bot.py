@@ -7,7 +7,7 @@ server = "chat.freenode.net"
 channel = "##bot-tester"
 botnick = "PyBuddy"
 adminname = "hebd1"
-exitcode = "bye " + botnick
+exitcode = "bye " + botnick.lower()
 
 
 ircsock.connect((server, 6667))
@@ -39,7 +39,7 @@ def main():
             name = ircmsg.split('!',1) [0] [1:]
             message = ircmsg.split('PRIVMSG',1) [1].split(':',1) [1] 
             if len(name) < 17:
-                if message.find('Hi ' + botnick) != -1:
+                if message.lower().find('hi ' + botnick.lower()) != -1:
                     sendmsg("Hello " + name + "!") 
                 if message[:5].find('.tell') != -1:
                     target = message.split(' ', 1) [1]
@@ -50,7 +50,7 @@ def main():
                         target = name
                         message = "Could not parse. The message should be formatted as '.tell [target] [message]'"
                     sendmsg(message, target) 
-                if name.lower() == adminname.lower() and message.rstrip() == exitcode:
+                if name.lower() == adminname.lower() and message.lower().rstrip() == exitcode:
                     sendmsg("oh..okay then :'(") 
                     ircsock.send(bytes("QUIT \n", "UTF-8"))
                     return
